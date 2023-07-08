@@ -7,3 +7,10 @@
 Ruby script used to detect the operating system of an IP address based on the TTL
 ----
 
+# Use 
+
+We must pass the target IP as an argument to the program, in the following way:
+
+```
+ruby whichSystem.rb <ip target>
+```
