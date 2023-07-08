@@ -42,6 +42,9 @@ def get_os(ip_address)
     ttls.each do |key,valor|
       if valor==ttl 
         os=key
+        break
+      else 
+        os="No identificado"
       end
     end
     puts "\n"+"*".red*50
