@@ -34,19 +34,25 @@ def get_os(ip_address)
   IO.popen("/usr/bin/ping -c 1 #{ip_address}") do |subproceso|
     res_ping = subproceso.read
   end
-  ttl=res_ping.match(/TTL=(\S+?(?:\s|t))/i)&.captures&.first
-  ttl=ttl.to_i
-  if ttl>=0 && ttl<=64
-    os = "Linux"
-  elsif ttl>=65 && ttl<=128
-    os = "Windows"
+  unless res_ping.scan(/\b#{Regexp.escape("Destination Host Unreachable")}\b/).any?
+    ttl=res_ping.match(/TTL=(\S+?(?:\s|t))/i)&.captures&.first
+    ttl=ttl.to_i
+    if ttl>=0 && ttl<=64
+      os = "Linux"
+    elsif ttl>=65 && ttl<=128
+      os = "Windows"
+    end
+    puts "\n"+"*".red*50
+    ip_len=ip_address.length
+    puts "*".red+"#{' '*((50-(ip_len+4))/2)}Ip:".blue+"#{ip_address} #{' '*((50-(ip_len+6))/2)}".purple+"*".red
+    os_len=os.length
+    puts "*".red+"#{' '*((50-(os_len+4))/2)}OS:".blue+"#{os} #{' '*((50-(os_len+6))/2)}".purple+"*".red
+    puts "*".red*50+"\n\n"
+  else 
+    puts "\n"+"*".red*50
+    puts "*".red+"#{' '*((50-19)/2)}Host no disponible".yellow+"#{' '*((50-19)/2)}"+"*".red
+    puts "*".red*50+"\n\n"
   end
-  puts "\n"+"*".red*50
-  ip_len=ip_address.length
-  puts "*".red+"#{' '*((50-(ip_len+4))/2)}Ip:".blue+"#{ip_address} #{' '*((50-(ip_len+6))/2)}".purple+"*".red
-  os_len=os.length
-  puts "*".red+"#{' '*((50-(os_len+4))/2)}OS:".blue+"#{os} #{' '*((50-(os_len+6))/2)}".purple+"*".red
-  puts "*".red*50+"\n\n"
 end
 
 if argumentos.empty?
