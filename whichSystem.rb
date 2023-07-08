@@ -29,6 +29,8 @@ def extract_ip(ip)
 end
 
 def get_os(ip_address)
+  #Hashes ttls
+  ttls={'Linux'=>64,'Windows'=>128,'Solaris'=>255}
   res_ping=""
   os=""
   IO.popen("/usr/bin/ping -c 1 #{ip_address}") do |subproceso|
@@ -37,10 +39,10 @@ def get_os(ip_address)
   unless res_ping.scan(/\b#{Regexp.escape("Destination Host Unreachable")}\b/).any?
     ttl=res_ping.match(/TTL=(\S+?(?:\s|t))/i)&.captures&.first
     ttl=ttl.to_i
-    if ttl>=0 && ttl<=64
-      os = "Linux"
-    elsif ttl>=65 && ttl<=128
-      os = "Windows"
+    ttls.each do |key,valor|
+      if valor==ttl 
+        os=key
+      end
     end
     puts "\n"+"*".red*50
     ip_len=ip_address.length
